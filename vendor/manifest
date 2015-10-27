@@ -1,0 +1,53 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/hashicorp/logutils",
+			"repository": "https://github.com/hashicorp/logutils",
+			"revision": "0dc08b1671f34c4250ce212759ebd880f743d883",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mattn/go-gtk/gdk",
+			"repository": "https://github.com/mattn/go-gtk",
+			"revision": "2a62e289c31a64fdc0ee73a2543e501b0cf4da8e",
+			"branch": "master",
+			"path": "/gdk"
+		},
+		{
+			"importpath": "github.com/mattn/go-gtk/gdkpixbuf",
+			"repository": "https://github.com/mattn/go-gtk",
+			"revision": "2a62e289c31a64fdc0ee73a2543e501b0cf4da8e",
+			"branch": "master",
+			"path": "/gdkpixbuf"
+		},
+		{
+			"importpath": "github.com/mattn/go-gtk/glib",
+			"repository": "https://github.com/mattn/go-gtk",
+			"revision": "2a62e289c31a64fdc0ee73a2543e501b0cf4da8e",
+			"branch": "master",
+			"path": "/glib"
+		},
+		{
+			"importpath": "github.com/mattn/go-gtk/gtk",
+			"repository": "https://github.com/mattn/go-gtk",
+			"revision": "2a62e289c31a64fdc0ee73a2543e501b0cf4da8e",
+			"branch": "master",
+			"path": "/gtk"
+		},
+		{
+			"importpath": "github.com/mattn/go-gtk/pango",
+			"repository": "https://github.com/mattn/go-gtk",
+			"revision": "2a62e289c31a64fdc0ee73a2543e501b0cf4da8e",
+			"branch": "master",
+			"path": "/pango"
+		},
+		{
+			"importpath": "github.com/mattn/go-webkit/webkit",
+			"repository": "https://github.com/mattn/go-webkit",
+			"revision": "543df4a5b2fb54910de042523ab66b1b48489b57",
+			"branch": "master",
+			"path": "/webkit"
+		}
+	]
+}
