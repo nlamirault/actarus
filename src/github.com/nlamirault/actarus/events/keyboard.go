@@ -18,16 +18,54 @@ import (
 	"log"
 
 	"github.com/mattn/go-gtk/gdk"
+	"github.com/mattn/go-gtk/gtk"
+
+	"github.com/nlamirault/actarus/command"
 )
 
 // KeyboardHandler handle events from keyboard
-func KeyboardHandler(event chan interface{}) {
+func KeyboardHandler(event chan interface{}, repl *gtk.Entry) {
 	for {
 		e := <-event
+		log.Printf("Event : %#v\n", e)
 		switch ev := e.(type) {
 		case *gdk.EventKey:
-			log.Println("[DEBUG] key-press-event:",
+			log.Println("[DEBUG] key-press-event: ",
 				ev.Keyval)
+			// log.Printf("Shift : %v\n", gdk.SHIFT_MASK)
+			// log.Printf("Mod1 : %v\n", gdk.MOD1_MASK)
+			// log.Printf("Mod2 : %v\n", gdk.MOD2_MASK)
+			// log.Printf("Mod3 : %v\n", gdk.MOD3_MASK)
+			// log.Printf("Mod4 : %v\n", gdk.MOD4_MASK)
+			// log.Printf("Mod5 : %v\n", gdk.MOD5_MASK)
+			// log.Printf("Control : %v\n", gdk.CONTROL_MASK)
+			// log.Printf("Control : %v\n", gdk.MODIFIER_MASK)
+			// log.Printf("Modifier  %d\n", ev.State)
+			switch ev.Keyval {
+			case gdk.KEY_colon:
+				if !repl.IsFocus() {
+					repl.SetVisible(true)
+					repl.GrabFocus()
+					repl.SetText(":")
+					repl.SetPosition(1)
+				}
+				break
+			case gdk.KEY_Escape:
+				repl.SetVisible(false)
+				break
+			case gdk.KEY_Return:
+				text := repl.GetText()
+				log.Printf("Repl text : %s", text)
+				if len(text) > 0 {
+					command.Run(text, "")
+				}
+				repl.SetText("")
+				break
+			case gdk.KEY_q:
+				if int(ev.State) == int(gdk.CONTROL_MASK) {
+					gtk.MainQuit()
+				}
+			}
 			break
 		default:
 			log.Printf("[DEBUG] event: %v\n", ev)

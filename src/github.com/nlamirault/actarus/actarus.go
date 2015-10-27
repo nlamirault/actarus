@@ -77,7 +77,6 @@ func runGUI() {
 		arg := ctx.Args(0)
 		keyboardEvent <- *(**gdk.EventKey)(unsafe.Pointer(&arg))
 	})
-	go events.KeyboardHandler(keyboardEvent)
 
 	// motionEvent := make(chan interface{})
 	// window.Connect("motion-notify-event", func(ctx *glib.CallbackContext) {
@@ -110,11 +109,31 @@ func runGUI() {
 		webview.LoadUri(urlBarEntry.GetText())
 	})
 
+	statusbar := gtk.NewStatusbar()
+	contextID := statusbar.GetContextId("actarus")
+	statusbar.Push(contextID, "Welcome to Actarus.")
+	vbox.PackStart(statusbar, false, false, 0)
+
+	replEntry := gtk.NewEntry()
+	replEntry.Hide()
+	vbox.PackEnd(replEntry, false, false, 0)
+
 	window.Add(vbox)
-	window.SetSizeRequest(600, 600)
+
+	// window.SetEvents(
+	// 	int(gdk.POINTER_MOTION_MASK |
+	// 		gdk.POINTER_MOTION_HINT_MASK |
+	// 		gdk.BUTTON_PRESS_MASK))
+	window.SetSizeRequest(defaultWinWidth, defaultWinHeight)
 	window.ShowAll()
 
 	urlBarEntry.Emit("activate")
+	replEntry.GrabFocus()
+	replEntry.SetVisible(false)
+
+	// Handlers
+	go events.KeyboardHandler(keyboardEvent, replEntry)
+
 	gtk.Main()
 }
 
@@ -126,6 +145,6 @@ func main() {
 	}
 	log.Printf("[INFO] Start Actarus")
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	runProfiler(fmt.Sprintf("localhost:%s", port))
+	//runProfiler(fmt.Sprintf("localhost:%s", port))
 	runGUI()
 }
