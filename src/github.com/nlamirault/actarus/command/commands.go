@@ -21,13 +21,12 @@ import (
 	"github.com/mattn/go-gtk/gtk"
 
 	"github.com/nlamirault/actarus/ui"
-	"github.com/nlamirault/actarus/version"
 )
 
 // Command represent a command from user
 type Command struct {
 	Name        string
-	Action      func(*gtk.Window, string) (*Output, error)
+	Action      func(*gtk.Window, string)
 	Arg         string
 	Description string
 }
@@ -59,34 +58,25 @@ func init() {
 	}
 }
 
-func actionAbout(parent *gtk.Window, args string) (*Output, error) {
+func actionAbout(parent *gtk.Window, args string) {
 	log.Printf("About command")
-	// dialog := ui.NewAboutDialog()
-	// dialog.Dialog.Run()
 	ui.NewAboutDialog(parent)
-	return &Output{
-		Content: fmt.Sprintf("Version :%s", version.Version),
-	}, nil
 }
 
-func actionHelp(parent *gtk.Window, args string) (*Output, error) {
+func actionHelp(parent *gtk.Window, args string) {
 	ui.ErrorDialog(parent, "Not available")
-	return nil, nil
 }
 
-func actionQuit(parent *gtk.Window, args string) (*Output, error) {
+func actionQuit(parent *gtk.Window, args string) {
 	log.Printf("Quit Actarus : %s\n", args)
 	gtk.MainQuit()
-	return nil, nil
 }
 
-func Run(cmd string, parent *gtk.Window, args string) error {
+func Run(cmd string, parent *gtk.Window, args string) {
 	for _, command := range commands {
 		log.Printf("[DEBUG] Command: %s %v\n", cmd, command)
 		if cmd == fmt.Sprintf(":%s", command.Name) {
-			_, err := command.Action(parent, args)
-			return err
+			command.Action(parent, args)
 		}
 	}
-	return nil
 }
