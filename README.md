@@ -12,6 +12,15 @@ Develop :
 * [![Circle CI](https://circleci.com/gh/nlamirault/actarus/tree/develop.svg?style=svg)](https://circleci.com/gh/nlamirault/actarus/tree/develop)
 
 
+
+## Cheatsheet
+
+Command              | Keybinding              | Description
+---------------------|------------------------------------------------------------
+<kbd>:quit</kbd>     | <kbd>C-q</kbd>          | Exit
+<kbd>:about</kbd>    |                         | Display about dialog
+
+
 ## Development
 
 * Initialize environment
