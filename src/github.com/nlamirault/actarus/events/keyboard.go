@@ -15,60 +15,85 @@
 package events
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/mattn/go-gtk/gdk"
 	"github.com/mattn/go-gtk/gtk"
 
 	"github.com/nlamirault/actarus/command"
+	"github.com/nlamirault/actarus/keyhandler"
+	"github.com/nlamirault/actarus/ui"
 )
 
 // KeyboardHandler handle events from keyboard
-func KeyboardHandler(event chan interface{}, repl *gtk.Entry) {
+func KeyboardHandler(event chan *keyhandler.KeyPressEvent, repl *gtk.Entry, notebook *gtk.Notebook) {
 	for {
-		e := <-event
-		log.Printf("Event : %#v\n", e)
-		switch ev := e.(type) {
-		case *gdk.EventKey:
-			log.Println("[DEBUG] key-press-event: ",
-				ev.Keyval)
-			// log.Printf("Shift : %v\n", gdk.SHIFT_MASK)
-			// log.Printf("Mod1 : %v\n", gdk.MOD1_MASK)
-			// log.Printf("Mod2 : %v\n", gdk.MOD2_MASK)
-			// log.Printf("Mod3 : %v\n", gdk.MOD3_MASK)
-			// log.Printf("Mod4 : %v\n", gdk.MOD4_MASK)
-			// log.Printf("Mod5 : %v\n", gdk.MOD5_MASK)
-			// log.Printf("Control : %v\n", gdk.CONTROL_MASK)
-			// log.Printf("Control : %v\n", gdk.MODIFIER_MASK)
-			// log.Printf("Modifier  %d\n", ev.State)
-			switch ev.Keyval {
-			case gdk.KEY_colon:
-				if !repl.IsFocus() {
-					repl.SetVisible(true)
-					repl.GrabFocus()
-					repl.SetText(":")
-					repl.SetPosition(1)
-				}
-				break
-			case gdk.KEY_Escape:
-				repl.SetVisible(false)
-				break
-			case gdk.KEY_Return:
+		kpe := <-event
+		log.Printf("[DEBUG] KeyPressEvent : %v", kpe)
+		switch kpe.KeyVal {
+		case gdk.KEY_Escape:
+			repl.SetVisible(false)
+			break
+		case gdk.KEY_colon:
+			if !repl.IsFocus() {
+				repl.SetVisible(true)
+				repl.GrabFocus()
+				repl.SetText(":")
+				repl.SetPosition(1)
+			}
+			break
+		case gdk.KEY_Return:
+			if repl.IsFocus() {
 				text := repl.GetText()
 				log.Printf("Repl text : %s", text)
 				if len(text) > 0 {
 					command.Run(text, "")
 				}
 				repl.SetText("")
-				break
-			case gdk.KEY_q:
-				if int(ev.State) == int(gdk.CONTROL_MASK) {
-					gtk.MainQuit()
-				}
 			}
 			break
-		default:
-			log.Printf("[DEBUG] event: %v\n", ev)
+		case gdk.KEY_f:
+			if kpe.GetModifier() == keyhandler.CTRL {
+				log.Printf("[DEBUG] Next tab")
+				notebook.NextPage()
+			}
+			break
+		case gdk.KEY_b:
+			if kpe.GetModifier() == keyhandler.CTRL {
+				log.Printf("[DEBUG] Prev tab")
+				notebook.PrevPage()
+			}
+			break
+		// case gdk.KEY_w:
+		// 	if kpe.GetModifier() == keyhandler.CTRL {
+		// 		log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
+		// 		notebook.RemovePage(notebook.GetCurrentPage())
+		// 		log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
+		// 	}
+		// 	break
+		case gdk.KEY_t:
+			if kpe.GetModifier() == keyhandler.CTRL {
+				log.Printf("[DEBUG] New tab")
+				log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
+				log.Printf("[DEBUG] current : %d",
+					notebook.GetCurrentPage())
+				tab := ui.BrowserTab("")
+				page := gtk.NewFrame(
+					fmt.Sprintf("%d", notebook.GetNPages()+1))
+				notebook.AppendPage(page,
+					gtk.NewLabel(fmt.Sprintf("%d",
+						notebook.GetNPages()+1)))
+				page.Add(tab)
+				log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
+				notebook.ShowAll()
+			}
+			break
+		case gdk.KEY_q:
+			if kpe.GetModifier() == keyhandler.CTRL {
+				gtk.MainQuit()
+			}
+			break
 		}
 	}
 }

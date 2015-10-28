@@ -28,7 +28,9 @@ import (
 	"github.com/mattn/go-webkit/webkit"
 
 	"github.com/nlamirault/actarus/events"
+	"github.com/nlamirault/actarus/keyhandler"
 	"github.com/nlamirault/actarus/logging"
+	"github.com/nlamirault/actarus/ui"
 	"github.com/nlamirault/actarus/version"
 )
 
@@ -72,10 +74,15 @@ func runGUI() {
 	window.SetTitle(getApplicationTitle())
 	window.Connect("destroy", gtk.MainQuit)
 
-	keyboardEvent := make(chan interface{})
+	keyboardEventsChan := make(chan *keyhandler.KeyPressEvent)
 	window.Connect("key-press-event", func(ctx *glib.CallbackContext) {
 		arg := ctx.Args(0)
-		keyboardEvent <- *(**gdk.EventKey)(unsafe.Pointer(&arg))
+		kev := *(**gdk.EventKey)(unsafe.Pointer(&arg))
+		kpe := keyhandler.KeyPressEvent{int(kev.Keyval), 0}
+		if (gdk.ModifierType(kev.State) & gdk.CONTROL_MASK) != 0 {
+			kpe.Modifier = gdk.CONTROL_MASK
+		}
+		keyboardEventsChan <- &kpe
 	})
 
 	// motionEvent := make(chan interface{})
@@ -85,29 +92,24 @@ func runGUI() {
 	// })
 	// go events.MotionHandler(motionEvent)
 
+	buttonEventChan := make(chan interface{})
+	window.Connect("button-press-event", func(ctx *glib.CallbackContext) {
+		arg := ctx.Args(0)
+		buttonEventChan <- *(**gdk.EventButton)(unsafe.Pointer(&arg))
+	})
+	go events.ButtonHandler(buttonEventChan)
+
 	setupProxy()
 
 	vbox := gtk.NewVBox(false, 1)
 
-	urlBarEntry := gtk.NewEntry()
-	urlBarEntry.SetText(homePage)
-	vbox.PackStart(urlBarEntry, false, false, 0)
+	notebook := gtk.NewNotebook()
 
-	swin := gtk.NewScrolledWindow(nil, nil)
-	swin.SetPolicy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-	swin.SetShadowType(gtk.SHADOW_IN)
-
-	webview := webkit.NewWebView()
-	webview.Connect("load-committed", func() {
-		urlBarEntry.SetText(webview.GetUri())
-	})
-	swin.Add(webview)
-
-	vbox.Add(swin)
-
-	urlBarEntry.Connect("activate", func() {
-		webview.LoadUri(urlBarEntry.GetText())
-	})
+	tab := ui.BrowserTab(homePage)
+	page := gtk.NewFrame("")
+	notebook.AppendPage(page, gtk.NewLabel("Home"))
+	page.Add(tab)
+	vbox.PackStart(notebook, true, true, 0)
 
 	statusbar := gtk.NewStatusbar()
 	contextID := statusbar.GetContextId("actarus")
@@ -120,19 +122,14 @@ func runGUI() {
 
 	window.Add(vbox)
 
-	// window.SetEvents(
-	// 	int(gdk.POINTER_MOTION_MASK |
-	// 		gdk.POINTER_MOTION_HINT_MASK |
-	// 		gdk.BUTTON_PRESS_MASK))
 	window.SetSizeRequest(defaultWinWidth, defaultWinHeight)
 	window.ShowAll()
 
-	urlBarEntry.Emit("activate")
 	replEntry.GrabFocus()
 	replEntry.SetVisible(false)
 
 	// Handlers
-	go events.KeyboardHandler(keyboardEvent, replEntry)
+	go events.KeyboardHandler(keyboardEventsChan, replEntry, notebook)
 
 	gtk.Main()
 }
@@ -145,6 +142,5 @@ func main() {
 	}
 	log.Printf("[INFO] Start Actarus")
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	//runProfiler(fmt.Sprintf("localhost:%s", port))
 	runGUI()
 }
