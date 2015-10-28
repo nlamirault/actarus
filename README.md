@@ -35,6 +35,7 @@ Command              | Keybinding              | Description
 
         $ make test
 
+
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md).
