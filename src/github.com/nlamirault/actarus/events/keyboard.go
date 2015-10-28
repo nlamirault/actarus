@@ -27,10 +27,11 @@ import (
 )
 
 // KeyboardHandler handle events from keyboard
-func KeyboardHandler(event chan *keyhandler.KeyPressEvent, repl *gtk.Entry, notebook *gtk.Notebook) {
+func KeyboardHandler(event chan *keyhandler.KeyPressEvent, window *gtk.Window, repl *gtk.Entry, notebook *gtk.Notebook) {
 	for {
 		kpe := <-event
 		log.Printf("[DEBUG] KeyPressEvent : %v", kpe)
+		gdk.ThreadsEnter()
 		switch kpe.KeyVal {
 		case gdk.KEY_Escape:
 			repl.SetVisible(false)
@@ -48,7 +49,7 @@ func KeyboardHandler(event chan *keyhandler.KeyPressEvent, repl *gtk.Entry, note
 				text := repl.GetText()
 				log.Printf("Repl text : %s", text)
 				if len(text) > 0 {
-					command.Run(text, "")
+					command.Run(text, window, "")
 				}
 				repl.SetText("")
 			}
@@ -78,13 +79,13 @@ func KeyboardHandler(event chan *keyhandler.KeyPressEvent, repl *gtk.Entry, note
 				log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
 				log.Printf("[DEBUG] current : %d",
 					notebook.GetCurrentPage())
-				tab := ui.BrowserTab("")
+				tab := ui.NewBrowser("")
 				page := gtk.NewFrame(
 					fmt.Sprintf("%d", notebook.GetNPages()+1))
 				notebook.AppendPage(page,
 					gtk.NewLabel(fmt.Sprintf("%d",
 						notebook.GetNPages()+1)))
-				page.Add(tab)
+				page.Add(tab.VBox)
 				log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
 				notebook.ShowAll()
 			}
@@ -95,5 +96,6 @@ func KeyboardHandler(event chan *keyhandler.KeyPressEvent, repl *gtk.Entry, note
 			}
 			break
 		}
+		gdk.ThreadsLeave()
 	}
 }

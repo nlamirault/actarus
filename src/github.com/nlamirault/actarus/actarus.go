@@ -69,7 +69,7 @@ func setupProxy() {
 }
 
 func runGUI() {
-	gtk.Init(nil)
+
 	window := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
 	window.SetTitle(getApplicationTitle())
 	window.Connect("destroy", gtk.MainQuit)
@@ -105,10 +105,10 @@ func runGUI() {
 
 	notebook := gtk.NewNotebook()
 
-	tab := ui.BrowserTab(homePage)
+	tab := ui.NewBrowser(homePage)
 	page := gtk.NewFrame("")
 	notebook.AppendPage(page, gtk.NewLabel("Home"))
-	page.Add(tab)
+	page.Add(tab.VBox)
 	vbox.PackStart(notebook, true, true, 0)
 
 	statusbar := gtk.NewStatusbar()
@@ -129,7 +129,7 @@ func runGUI() {
 	replEntry.SetVisible(false)
 
 	// Handlers
-	go events.KeyboardHandler(keyboardEventsChan, replEntry, notebook)
+	go events.KeyboardHandler(keyboardEventsChan, window, replEntry, notebook)
 
 	gtk.Main()
 }
@@ -142,5 +142,8 @@ func main() {
 	}
 	log.Printf("[INFO] Start Actarus")
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	glib.ThreadInit(nil)
+	gdk.ThreadsInit()
+	gtk.Init(nil)
 	runGUI()
 }

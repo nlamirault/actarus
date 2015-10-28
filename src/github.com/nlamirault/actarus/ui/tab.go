@@ -22,14 +22,16 @@ import (
 	"github.com/mattn/go-webkit/webkit"
 )
 
-// type Browser struct {
-// 	VBox     *gtk.VBox
-// 	WebView  *gtk.WebView
-// 	URLEntry *gtk.Entry
-// 	Link     string
-// }
+// Browser defines
+type Browser struct {
+	VBox     *gtk.VBox
+	WebView  *webkit.WebView
+	URLEntry *gtk.Entry
+	Link     string
+}
 
-func BrowserTab(uri string) *gtk.VBox {
+// NewBrowser returns a new browser component
+func NewBrowser(uri string) *Browser {
 	vbox := gtk.NewVBox(false, 1)
 
 	urlBarEntry := gtk.NewEntry()
@@ -41,23 +43,32 @@ func BrowserTab(uri string) *gtk.VBox {
 	swin.SetShadowType(gtk.SHADOW_IN)
 
 	webview := webkit.NewWebView()
-
-	webview.Connect("load-committed", func() {
-		urlBarEntry.SetText(webview.GetUri())
-	})
-
-	webview.Connect("hovering-over-link", func(ctx *glib.CallbackContext) {
-		uri := ctx.Args(1).ToString()
-		log.Printf("[DEBUG] URI: %s", uri)
-	})
-
 	swin.Add(webview)
-
 	vbox.Add(swin)
 
 	urlBarEntry.Connect("activate", func() {
 		webview.LoadUri(urlBarEntry.GetText())
 	})
 	urlBarEntry.Emit("activate")
-	return vbox
+	//return vbox
+	browser := &Browser{
+		VBox:     vbox,
+		WebView:  webview,
+		URLEntry: urlBarEntry,
+		Link:     "",
+	}
+	browser.connectSignals()
+	return browser
+}
+
+func (b *Browser) connectSignals() {
+
+	b.WebView.Connect("load-committed", func() {
+		b.URLEntry.SetText(b.WebView.GetUri())
+	})
+
+	b.WebView.Connect("hovering-over-link", func(ctx *glib.CallbackContext) {
+		uri := ctx.Args(1).ToString()
+		log.Printf("[DEBUG] URI: %s", uri)
+	})
 }
