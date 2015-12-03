@@ -19,7 +19,9 @@ Command              | Keybinding              | Description
 ---------------------|-------------------------|----------------------------------
 <kbd>:quit</kbd>     | <kbd>C-q</kbd>          | Exit
 <kbd>:about</kbd>    |                         | Display about dialog
-
+                     | <kbd>C-t</kbd>          | New tab
+                     | <kbd>C-PageUp</kbd>     | Next tab
+                     | <kbd>C-PageDown</kbd>   | Previous tab
 
 ## Development
 
