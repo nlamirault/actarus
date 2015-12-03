@@ -15,7 +15,7 @@
 package events
 
 import (
-	"fmt"
+	// "fmt"
 	"log"
 
 	"github.com/mattn/go-gtk/gdk"
@@ -27,7 +27,8 @@ import (
 )
 
 // KeyboardHandler handle events from keyboard
-func KeyboardHandler(event chan *keyhandler.KeyPressEvent, window *gtk.Window, repl *gtk.Entry, notebook *gtk.Notebook) {
+func KeyboardHandler(event chan *keyhandler.KeyPressEvent, window *gtk.Window,
+	repl *gtk.Entry, notebook *gtk.Notebook) {
 	for {
 		kpe := <-event
 		log.Printf("[DEBUG] KeyPressEvent : %v", kpe)
@@ -54,18 +55,6 @@ func KeyboardHandler(event chan *keyhandler.KeyPressEvent, window *gtk.Window, r
 				repl.SetText("")
 			}
 			break
-		case gdk.KEY_f:
-			if kpe.GetModifier() == keyhandler.CTRL {
-				log.Printf("[DEBUG] Next tab")
-				notebook.NextPage()
-			}
-			break
-		case gdk.KEY_b:
-			if kpe.GetModifier() == keyhandler.CTRL {
-				log.Printf("[DEBUG] Prev tab")
-				notebook.PrevPage()
-			}
-			break
 		// case gdk.KEY_w:
 		// 	if kpe.GetModifier() == keyhandler.CTRL {
 		// 		log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
@@ -80,11 +69,9 @@ func KeyboardHandler(event chan *keyhandler.KeyPressEvent, window *gtk.Window, r
 				log.Printf("[DEBUG] current : %d",
 					notebook.GetCurrentPage())
 				tab := ui.NewBrowser("")
-				page := gtk.NewFrame(
-					fmt.Sprintf("%d", notebook.GetNPages()+1))
-				notebook.AppendPage(page,
-					gtk.NewLabel(fmt.Sprintf("%d",
-						notebook.GetNPages()+1)))
+				page := gtk.NewFrame("")
+				//fmt.Sprintf("%d", notebook.GetNPages()+1))
+				notebook.AppendPage(page, gtk.NewLabel("New tab"))
 				page.Add(tab.VBox)
 				log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
 				notebook.ShowAll()
