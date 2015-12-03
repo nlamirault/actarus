@@ -16,7 +16,7 @@ Develop :
 ## Cheatsheet
 
 Command              | Keybinding              | Description
----------------------|------------------------------------------------------------
+---------------------|-------------------------|----------------------------------
 <kbd>:quit</kbd>     | <kbd>C-q</kbd>          | Exit
 <kbd>:about</kbd>    |                         | Display about dialog
 
