@@ -28,7 +28,7 @@ import (
 
 // KeyboardHandler handle events from keyboard
 func KeyboardHandler(event chan *keyhandler.KeyPressEvent, window *gtk.Window,
-	repl *gtk.Entry, notebook *gtk.Notebook) {
+	repl *gtk.Entry, URLEntry *gtk.Entry, notebook *gtk.Notebook) {
 	for {
 		kpe := <-event
 		log.Printf("[DEBUG] KeyPressEvent : %v", kpe)
@@ -38,7 +38,7 @@ func KeyboardHandler(event chan *keyhandler.KeyPressEvent, window *gtk.Window,
 			repl.SetVisible(false)
 			break
 		case gdk.KEY_colon:
-			if !repl.IsFocus() {
+			if !repl.IsFocus() && !URLEntry.IsFocus() {
 				repl.SetVisible(true)
 				repl.GrabFocus()
 				repl.SetText(":")

@@ -36,6 +36,7 @@ func NewBrowser(uri string) *Browser {
 
 	urlBarEntry := gtk.NewEntry()
 	urlBarEntry.SetText(uri)
+	urlBarEntry.GrabFocus()
 	vbox.PackStart(urlBarEntry, false, false, 0)
 
 	swin := gtk.NewScrolledWindow(nil, nil)
@@ -46,10 +47,9 @@ func NewBrowser(uri string) *Browser {
 	swin.Add(webview)
 	vbox.Add(swin)
 
-	urlBarEntry.Connect("activate", func() {
-		webview.LoadUri(urlBarEntry.GetText())
-	})
-	urlBarEntry.Emit("activate")
+	// urlBarEntry.Connect("activate", func() {
+	// 	webview.LoadUri(urlBarEntry.GetText())
+	// })
 	//return vbox
 	browser := &Browser{
 		VBox:     vbox,
@@ -58,17 +58,19 @@ func NewBrowser(uri string) *Browser {
 		Link:     "",
 	}
 	browser.connectSignals()
+	urlBarEntry.Emit("activate")
 	return browser
 }
 
 func (b *Browser) connectSignals() {
-
 	b.WebView.Connect("load-committed", func() {
 		b.URLEntry.SetText(b.WebView.GetUri())
 	})
-
 	b.WebView.Connect("hovering-over-link", func(ctx *glib.CallbackContext) {
 		uri := ctx.Args(1).ToString()
 		log.Printf("[DEBUG] URI: %s", uri)
+	})
+	b.URLEntry.Connect("activate", func() {
+		b.WebView.LoadUri(b.URLEntry.GetText())
 	})
 }

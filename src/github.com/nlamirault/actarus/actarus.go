@@ -129,7 +129,12 @@ func runGUI() {
 	replEntry.SetVisible(false)
 
 	// Handlers
-	go events.KeyboardHandler(keyboardEventsChan, window, replEntry, notebook)
+	go events.KeyboardHandler(
+		keyboardEventsChan,
+		window,
+		replEntry,
+		tab.URLEntry,
+		notebook)
 
 	gtk.Main()
 }
