@@ -15,7 +15,7 @@
 package ui
 
 import (
-	"fmt"
+	//"fmt"
 
 	"github.com/mattn/go-gtk/gtk"
 
@@ -40,8 +40,10 @@ type AboutDialog struct {
 func NewAboutDialog(parent *gtk.Window) {
 	dialog := gtk.NewAboutDialog()
 	dialog.SetName("Actarus")
-	dialog.SetProgramName(fmt.Sprintf("Actarus - v%s", version.Version))
+	dialog.SetProgramName("Actarus")
+	dialog.SetVersion(version.Version)
 	dialog.SetAuthors(authors)
+	dialog.SetCopyright("Copyright (c) 2015 Nicolas Lamirault")
 	dialog.SetLicense(`
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
