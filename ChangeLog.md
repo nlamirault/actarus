@@ -1,7 +1,7 @@
 Actarus ChangeLog
 ================
 
-# Version 0.1.0 (2015-10-28)
+# Version 0.1.0 (2016-01-14)
 
 - Implements *about* command
 - Implements *quit* command
