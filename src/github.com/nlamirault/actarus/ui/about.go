@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+// Copyright (C) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,13 +37,14 @@ type AboutDialog struct {
 	Dialog *gtk.AboutDialog
 }
 
+// NewAboutDialog launch an About dialog window
 func NewAboutDialog(parent *gtk.Window) {
 	dialog := gtk.NewAboutDialog()
 	dialog.SetName("Actarus")
 	dialog.SetProgramName("Actarus")
 	dialog.SetVersion(version.Version)
 	dialog.SetAuthors(authors)
-	dialog.SetCopyright("Copyright (c) 2015 Nicolas Lamirault")
+	dialog.SetCopyright("Copyright (c) 2015, 2016 Nicolas Lamirault")
 	dialog.SetLicense(`
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -67,7 +68,7 @@ func NewAboutDialog(parent *gtk.Window) {
 	// 		gtk.MESSAGE_INFO,
 	// 		gtk.BUTTONS_OK,
 	// 		`Actarus
-	// Copyright (c) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>`)
+	// Copyright (c) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>`)
 	// 	dialog.Response(func() {
 	// 		dialog.Destroy()
 	// 	})

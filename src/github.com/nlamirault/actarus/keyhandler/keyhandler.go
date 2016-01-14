@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+// Copyright (C) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,14 +19,22 @@ import (
 )
 
 const (
+	// NONE is none key
 	NONE Modifier = iota
+
+	// CTRL is Control key
 	CTRL
+	// FN is Function key
 	FN
+	// HYPER is Hyper key
 	HYPER
+	// META is Meta key
 	META
+	// SUPER is Super key
 	SUPER
 )
 
+// Modifier represents a key modifier
 type Modifier int
 
 // KeyPressEvent represents a keypress consisting of the particular key

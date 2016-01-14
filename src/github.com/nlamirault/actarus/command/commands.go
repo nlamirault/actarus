@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+// Copyright (C) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -72,6 +72,7 @@ func actionQuit(parent *gtk.Window, args string) {
 	gtk.MainQuit()
 }
 
+// Run search for a command and execute it
 func Run(cmd string, parent *gtk.Window, args string) {
 	for _, command := range commands {
 		log.Printf("[DEBUG] Command: %s %v\n", cmd, command)
