@@ -60,8 +60,19 @@ func KeyboardHandler(event chan *keyhandler.KeyPressEvent, window *gtk.Window,
 		// 		log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
 		// 		notebook.RemovePage(notebook.GetCurrentPage())
 		// 		log.Printf("[DEBUG] nb : %d", notebook.GetNPages())
+		// 		notebook.PrevPage()
 		// 	}
 		// 	break
+		case gdk.KEY_p:
+			if kpe.GetModifier() == keyhandler.CTRL {
+				notebook.PrevPage()
+			}
+			break
+		case gdk.KEY_n:
+			if kpe.GetModifier() == keyhandler.CTRL {
+				notebook.NextPage()
+			}
+			break
 		case gdk.KEY_t:
 			if kpe.GetModifier() == keyhandler.CTRL {
 				log.Printf("[DEBUG] New tab")
